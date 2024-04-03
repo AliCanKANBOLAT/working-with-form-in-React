@@ -1,8 +1,14 @@
 import React, { useState } from "react";
 
 export default function TaskForm () {
-  const [formData, setFormData] = useState({})
+  const emptyForm = {
+    task : "",
+    priority: false,
+  }
+  const [formData, setFormData] = useState(emptyForm)
+  const[tasks, setTasks] = useState([])
   function handleInputChange(event) {
+
     // const { name, type, checked, value } = event.target;
     // setFormData(prev => ({
     //   ...prev,
@@ -22,9 +28,19 @@ export default function TaskForm () {
     function handleFormSubmit(event) {
         event.preventDefault()
         console.log(formData)
+        if(formData.task.length>3)  {
+          setTasks(prev => 
+           [ formData, ...prev])
+          setFormData(emptyForm)
+          event.target.reset()
+          console.log(tasks)
+        }
     }
     return (
         <>
+        <ul>
+          {tasks.map((item,index) => <li key={index}>{item.task}</li> )}
+        </ul>
         <form onSubmit={handleFormSubmit}>
   <div className="row mb-3">
     <label htmlFor="task" className="col-sm-2 col-form-label">Task</label>
