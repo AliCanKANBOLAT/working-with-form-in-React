@@ -9,8 +9,14 @@ export default function TaskForm () {
   }
   const [formData, setFormData] = useState(emptyForm)
   const[tasks, setTasks] = useState([])
+  
+  function editTask(uuid) {
+    console.log(editTask)
+    const task = task.find(item => item.uuid === uuid)
+    setFormData({...task, isEdited : true})
+  
+  }
   function removeTask(uuid) {
-    console.log(uuid)
     setTasks(prev =>
       prev.filter(item => item.uuid !== uuid))   // uuid bilgisi aynı olmayanları seçiyor yani siliyor.
   }
@@ -35,7 +41,10 @@ export default function TaskForm () {
 
     function handleFormSubmit(event) {
         event.preventDefault()
-        console.log(formData)
+        if(formData.isEdited) {
+          taskIndex = tasks.findIndex(item => item.uuid === formData.uuid)
+          newTasks = tasks.slice()
+        }
         if(formData.task.length>3)  {
           formData.uuid = uuidv4()
           setTasks(prev => 
@@ -47,21 +56,22 @@ export default function TaskForm () {
     }
     return (
         <>
-        <TaskList tasks={tasks} removeTask={removeTask} />
+        <TaskList tasks={tasks} removeTask={removeTask} editTask={editTask} />
         <form onSubmit={handleFormSubmit}>
-  <div className="row mb-3">
-    <label htmlFor="task" className="col-sm-2 col-form-label">Task</label>
-    <div className="col-sm-10">
-      <input type="text" className="form-control" id="task" name="task" 
-      onChange={handleInputChange} />
-    </div>
-  </div>
+        <div className="row mb-3">
+        <label htmlFor="task" className="col-sm-2 col-form-label">Task</label>
+        <div className="col-sm-10">
+        <input type="text" className="form-control" id="task" name="task" value={formData.task} 
+        onChange={handleInputChange} />
+        </div>
+       </div>
   
   
   <div className="row mb-3">
     <div className="col-sm-10 offset-sm-2">
       <div className="form-check">
-        <input className="form-check-input" type="checkbox" id="priority" name="priority" 
+        <input className="form-check-input" type="checkbox" id="priority" name="priority"
+         checked={formData.priority}
         onChange={handleInputChange} /> 
         <label className="form-check-label" htmlFor="priority">
           Has Priority
