@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import TaskListItem from "./TaskListItem"; 
-export default function TaskList ({tasks, editTask, removeTask}) {
+export default function TaskList ({tasks, editTask, removeTask, doneTask}) {
   const [priority, setPriority] = useState(false);
   const [filteredTasks, setFilteredTasks] = useState(tasks)
    function handlePriorityFilter () {
@@ -30,7 +30,12 @@ export default function TaskList ({tasks, editTask, removeTask}) {
         <ul className="list-group">
           {filteredTasks.map(
             (task) => 
-            <TaskListItem key={task.uuid} task={task} editTask={editTask} removeTask={removeTask} />
+            <TaskListItem 
+            key={task.uuid} 
+            task={task} 
+            editTask={editTask} 
+            removeTask={removeTask} 
+            doneTask={doneTask} />
            )}
         </ul>
         </div>
