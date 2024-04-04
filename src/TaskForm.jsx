@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {v4 as uuidv4} from 'uuid';
 import TaskList from "./TaskList";
 
 export default function TaskForm () {
@@ -8,8 +9,10 @@ export default function TaskForm () {
   }
   const [formData, setFormData] = useState(emptyForm)
   const[tasks, setTasks] = useState([])
-  function removeTask(item) {
-    console.log(item)
+  function removeTask(uuid) {
+    console.log(uuid)
+    setTasks(prev =>
+      prev.filter(item => item.uuid !== uuid))   // uuid bilgisi aynı olmayanları seçiyor yani siliyor.
   }
 
   function handleInputChange(event) {
@@ -34,6 +37,7 @@ export default function TaskForm () {
         event.preventDefault()
         console.log(formData)
         if(formData.task.length>3)  {
+          formData.uuid = uuidv4()
           setTasks(prev => 
            [ formData, ...prev])
           setFormData(emptyForm)
@@ -65,7 +69,7 @@ export default function TaskForm () {
       </div>
     </div>
   </div>
-  <button type="submit" className="btn btn-primary">Sign in</button>
+  <button type="submit" className="btn btn-primary">Add</button>
 </form>
         </>
     )
