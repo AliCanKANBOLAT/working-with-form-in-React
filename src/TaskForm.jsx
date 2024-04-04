@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {v4 as uuidv4} from 'uuid';
 import TaskList from "./TaskList";
 
@@ -10,6 +10,32 @@ export default function TaskForm () {
   }
   const [formData, setFormData] = useState(emptyForm)
   const[tasks, setTasks] = useState([])
+  const [taskChangeCount, setTaskChangeCount] = useState(0)
+
+  // sayfa ilk acıldıgında ıslem yap 
+  // useEffect(()=> {}, []) -- Sayfa ilk acildiğinda işlem yap
+
+  useEffect(() => {
+    const localStorageTasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    setTasks(localStorageTasks);
+  }, []);
+  
+  useEffect(() => {
+    if (taskChangeCount > 0) {
+      localStorage.setItem("tasks", JSON.stringify(tasks));
+    }
+  }, [tasks, taskChangeCount]);
+
+  //tasks bilgisi degiştiğinde işlem yap.
+
+  // useEffect(()=> {}, [ITEM1,ITEM2]) -- ITEM1 VE ITEM2 degistiginde islem yap.
+
+
+  useEffect(()=> {
+    if(taskChangeCount > 0) {
+      localStorage.setItem("tasks",JSON.stringify(tasks))
+    }
+  },[taskChangeCount])
 
   function doneTask(uuid) {
     const taskIndex = tasks.findIndex(item => item.uuid === uuid)
@@ -18,17 +44,20 @@ export default function TaskForm () {
     const newTasks = tasks.slice()
     newTasks[taskIndex] = task
     setTasks(newTasks)
+    setTaskChangeCount(prev => prev +1)
   
   }
   
   function editTask(uuid) {
     const task = tasks.find(item => item.uuid === uuid)
     setFormData({...task, isEdited : true})
+    setTaskChangeCount(prev => prev +1)
   
   }
   function removeTask(uuid) {
     setTasks(prev =>
-      prev.filter(item => item.uuid !== uuid))   // uuid bilgisi aynı olmayanları seçiyor yani siliyor.
+      prev.filter(item => item.uuid !== uuid)) // uuid bilgisi aynı olmayanları seçiyor yani siliyor.
+      setTaskChangeCount(prev => prev +1)  
   }
 
   function handleInputChange(event) {
@@ -61,6 +90,7 @@ export default function TaskForm () {
           formData.uuid = uuidv4()
           setTasks(prev => 
            [formData, ...prev])
+           setTaskChangeCount(prev => prev +1)
           setFormData(emptyForm)
           event.target.reset()
           console.log(tasks)
