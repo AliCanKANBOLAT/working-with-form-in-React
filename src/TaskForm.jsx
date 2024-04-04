@@ -11,7 +11,6 @@ export default function TaskForm () {
   const[tasks, setTasks] = useState([])
   
   function editTask(uuid) {
-    console.log(editTask)
     const task = tasks.find(item => item.uuid === uuid)
     setFormData({...task, isEdited : true})
   
