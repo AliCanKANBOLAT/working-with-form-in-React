@@ -85,6 +85,8 @@ export default function TaskForm () {
           const newTasks = tasks.slice()
           newTasks[taskIndex] ={...formData}
           setTasks(newTasks)
+          setTaskChangeCount(prev => prev +1)
+          setFormData(emptyForm)
         }
         else if(formData.task.length>3)  {
           formData.uuid = uuidv4()
